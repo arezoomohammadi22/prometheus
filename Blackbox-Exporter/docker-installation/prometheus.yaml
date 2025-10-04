@@ -1,0 +1,42 @@
+global:
+  scrape_interval: 15s # هر ۱۵ ثانیه داده‌ها را جمع‌آوری کند
+
+scrape_configs:
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  - job_name: "docker-host"
+    static_configs:
+      - targets: ["10.211.55.56:8080"]
+
+  - job_name: "node-58"
+    static_configs:
+      - targets: ["10.211.55.58:9100"]
+
+  - job_name: "node-58-docker"
+    static_configs:
+      - targets: ["10.211.55.58:9200"]
+
+  - job_name: "k8s-nodes"
+    static_configs:
+      - targets: ["10.211.55.50:9100", "10.211.55.150:9100"]
+
+  # 🔹 Blackbox Exporter job
+  - job_name: "blackbox"
+    metrics_path: /probe
+    params:
+      module: [http_2xx]   # choose the probe type (http_2xx, icmp, tcp_connect)
+    static_configs:
+      - targets:
+          - https://google.com
+          - https://example.com
+          - http://10.211.55.56:8080   # docker-host
+          - http://10.211.55.58:9200   # node-58-docker
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115  # service name of Blackbox Exporter in docker-compose
