@@ -1,0 +1,42 @@
+groups:
+- name: blackbox-exporter-alerts
+  rules:
+    # 🔴 Website Down
+    - alert: WebsiteDown
+      expr: probe_success == 0
+      for: 2m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Website down ({{ $labels.instance }})"
+        description: "The probe failed for {{ $labels.instance }} for more than 2 minutes."
+
+    # ⚠️ High Latency
+    - alert: HighLatency
+      expr: probe_duration_seconds > 1
+      for: 1m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High latency on {{ $labels.instance }}"
+        description: "Probe duration is {{ $value }} seconds (above 1s)."
+
+    # 🔐 SSL Expiry Soon
+    - alert: SSLCertificateExpiringSoon
+      expr: probe_ssl_earliest_cert_expiry - time() < 86400 * 7
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: "SSL certificate expiring soon for {{ $labels.instance }}"
+        description: "SSL cert for {{ $labels.instance }} will expire in less than 7 days."
+
+    # 🔴 SSL Expired
+    - alert: SSLCertificateExpired
+      expr: probe_ssl_earliest_cert_expiry - time() < 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "SSL certificate expired for {{ $labels.instance }}"
+        description: "SSL certificate for {{ $labels.instance }} has expired!"
