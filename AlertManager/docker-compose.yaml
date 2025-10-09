@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  prometheus:
+    image: docker.arvancloud.ir/prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./alert.rules.yml:/etc/prometheus/alert.rules.yml    # add your alert rules
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--web.enable-lifecycle'
+    depends_on:
+      - alertmanager
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring
+
+  grafana:
+    image: docker.arvancloud.ir/grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    volumes:
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - monitoring
+
+  blackbox-exporter:
+    image: docker.arvancloud.ir/prom/blackbox-exporter:latest
+    container_name: blackbox_exporter
+    restart: unless-stopped
+    volumes:
+      - ./blackbox.yml:/etc/blackbox_exporter/config.yml
+    command:
+      - '--config.file=/etc/blackbox_exporter/config.yml'
+    ports:
+      - "9115:9115"
+    networks:
+      - monitoring
+
+  nginx:
+    image: docker.arvancloud.ir/nginx:alpine
+    container_name: nginx_reverse_proxy
+    restart: unless-stopped
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/nginx.conf:ro
+      - ./grafana.conf:/etc/nginx/conf.d/grafana.conf:ro
+    ports:
+      - "80:80"
+    networks:
+      - monitoring
+
+  # -------------------------------
+  # 🚨 NEW: Alertmanager Service
+  # -------------------------------
+  alertmanager:
+    image: docker.arvancloud.ir/prom/alertmanager:latest
+    container_name: alertmanager
+    restart: unless-stopped
+    volumes:
+      - ./alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+    ports:
+      - "9093:9093"
+    networks:
+      - monitoring
+
+networks:
+  monitoring:
+    driver: bridge
+
+volumes:
+  grafana_data:
