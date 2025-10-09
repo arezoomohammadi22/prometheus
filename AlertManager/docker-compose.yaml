@@ -1,6 +1,15 @@
 version: '3.8'
 
 services:
+  discord-webhook-proxy:
+    build: .
+    container_name: discord-webhook-proxy
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    networks:
+      - monitoring
+
   prometheus:
     image: docker.arvancloud.ir/prom/prometheus:latest
     container_name: prometheus
