@@ -6,7 +6,7 @@ services:
     container_name: gitlab-ci-exporter
     restart: always
     environment:
-      GITLAB_TOKEN: "glpat-XtpKlSM4oCTMFn5dYzhbqG86MQp1OjEH.01.0w0t0ikdx"
+      GITLAB_TOKEN: "glpat"
       GITLAB_URL: "https://gitlab.sananetco.com"
       CONFIG_FILE: /gitlab-ci-pipelines-exporter.yml
     ports:
