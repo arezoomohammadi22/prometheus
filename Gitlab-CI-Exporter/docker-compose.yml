@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  gitlab-ci-exporter:
+    image: mvisonneau/gitlab-ci-pipelines-exporter:latest
+    container_name: gitlab-ci-exporter
+    restart: always
+    environment:
+      GITLAB_TOKEN: "glpat-XtpKlSM4oCTMFn5dYzhbqG86MQp1OjEH.01.0w0t0ikdx"
+      GITLAB_URL: "https://gitlab.sananetco.com"
+      CONFIG_FILE: /gitlab-ci-pipelines-exporter.yml
+    ports:
+      - "8085:8080"
+    volumes:
+      - ./gitlab-ci-pipelines-exporter.yml:/gitlab-ci-pipelines-exporter.yml
