@@ -1,0 +1,26 @@
+gitlab:
+  url: https://gitlab.sananetco.com
+  token: glpat   # scopes: read_api (recommended: also add read_user, read_repository)
+
+project_defaults:
+  pull:
+    pipeline:
+      jobs:
+        enabled: true
+
+
+projects:
+  - name: "root/test"
+    refs:
+      - "main"
+      - "develop"
+    pull:
+      pipelines: true
+      jobs: true
+
+  - name: "root/test02"
+    refs:
+      - "main"
+    pull:
+      pipelines: true
+      jobs: true
