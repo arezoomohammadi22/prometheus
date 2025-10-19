@@ -3,19 +3,7 @@
 This repository provides a **step-by-step installation** for setting up a **self-hosted GitLab Runner**
 using **Docker Compose**, exposing its **Prometheus metrics**, and visualizing them in **Grafana**.
 
----
-
-## 🚀 1. Clone and Run
-
-```bash
-git clone https://github.com/<your-username>/gitlab-runner-metrics.git
-cd gitlab-runner-metrics
-docker compose up -d
-```
-
----
-
-## ⚙️ 2. Register Your Runner
+Register Your Runner
 
 Get your registration token from GitLab UI  
 (`Admin Area → CI/CD → Runners → Registration token`):
@@ -26,7 +14,7 @@ docker exec -it gitlab-runner gitlab-runner register   --non-interactive   --url
 
 ---
 
-## 📊 3. Expose Metrics
+## 📊  Expose Metrics
 
 Metrics are automatically available on:
 
@@ -41,7 +29,7 @@ You should see metrics such as:
 
 ---
 
-## 🔧 4. Add to Prometheus
+## 🔧  Add to Prometheus
 
 In your Prometheus configuration (`prometheus.yml`):
 
@@ -56,7 +44,7 @@ Restart Prometheus and verify that it collects data.
 
 ---
 
-## 📈 5. Import Grafana Dashboard
+## 📈  Import Grafana Dashboard
 
 1. Go to Grafana → **"+" → Import**
 2. Enter dashboard ID **9631**
@@ -67,7 +55,7 @@ Restart Prometheus and verify that it collects data.
 
 ---
 
-## 🧩 6. Verify
+## 🧩  Verify
 
 Once the dashboard is imported, you’ll see:
 - Active jobs and builds
