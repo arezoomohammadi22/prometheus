@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  gitlab-runner:
+    image: gitlab/gitlab-runner:latest
+    container_name: gitlab-runner
+    restart: always
+    environment:
+      - TZ=Asia/Tehran
+    volumes:
+      - ./config:/etc/gitlab-runner
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      # Expose Prometheus metrics endpoint
+      - "9252:9252"
+    command: >
+      gitlab-runner run
+      --user=gitlab-runner
+      --working-directory=/home/gitlab-runner
+      --listen-address=:9252
